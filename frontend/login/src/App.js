@@ -1,34 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './components/HomePage';
 import RegisterForm from './components/RegisterForm';
-import Home from './components/Home';
+import LoginPage from './components/LoginForm';
 
 function App() {
-  return (
-    <Router>
-      <div className="App">
-        <h1>React Router Example</h1>
-
-        {/* Links to navigate between pages */}
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Define the routes */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<RegisterForm />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/register" element={<RegisterForm />} />
+                <Route path="/login" element={<LoginPage />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
+

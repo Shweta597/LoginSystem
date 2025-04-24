@@ -15,8 +15,26 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public AppUser registerUser(AppUser user) {
+    public String registerUser(AppUser user) {
+        // Check if the email already exists
+        if (isEmailRegistered(user.getEmail())) {
+            return "Email is already registered. Please login.";
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
+        return "User registered successfully!";
     }
+
+    public String loginUser(String email, String password) {
+        AppUser user = userRepository.findByEmail(email).orElse(null);
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            return "Login successful!";
+        }
+        return "Invalid email or password!";
+    }
+
+    public boolean isEmailRegistered(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
 }

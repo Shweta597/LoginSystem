@@ -1,29 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function RegisterForm() {
-    const [name, setName] = useState('');
+function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/register', {
-                name,
+            const response = await axios.post('http://localhost:8080/login', {
                 email,
                 password
             });
 
-            setMessage(response.data.message || "Registration successful!");
-            setTimeout(() => navigate('/login'), 2000); // Redirect after 2s
+            setMessage(response.data); // shows "Login successful!" if successful
         } catch (error) {
             if (error.response) {
-                setMessage(error.response.data.message || "Registration failed.");
+                setMessage(error.response.data); // shows error message from backend
             } else {
                 setMessage("An error occurred. Please try again.");
             }
@@ -32,17 +27,8 @@ function RegisterForm() {
 
     return (
         <div>
-            <h2>Register</h2>
+            <h2>Login</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
                 <div>
                     <label>Email:</label>
                     <input
@@ -61,11 +47,11 @@ function RegisterForm() {
                         required
                     />
                 </div>
-                <button type="submit">Register</button>
+                <button type="submit">Login</button>
             </form>
             {message && <p>{message}</p>}
         </div>
     );
 }
 
-export default RegisterForm;
+export default LoginForm;
