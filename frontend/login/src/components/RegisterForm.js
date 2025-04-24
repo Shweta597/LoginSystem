@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { TextField, Button, Typography, Container, Box, Alert } from '@mui/material';
 
 function RegisterForm() {
     const [name, setName] = useState('');
@@ -20,7 +21,7 @@ function RegisterForm() {
             });
 
             setMessage(response.data.message || "Registration successful!");
-            setTimeout(() => navigate('/login'), 2000); // Redirect after 2s
+            setTimeout(() => navigate('/login'), 2000);
         } catch (error) {
             if (error.response) {
                 setMessage(error.response.data.message || "Registration failed.");
@@ -31,40 +32,52 @@ function RegisterForm() {
     };
 
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Name:</label>
-                    <input
-                        type="text"
+        <Container maxWidth="sm">
+            <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2, backgroundColor: 'white' }}>
+                <Typography variant="h4" align="center" gutterBottom>
+                    Register
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
                     />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input
+                    <TextField
+                        label="Email"
+                        variant="outlined"
                         type="email"
+                        fullWidth
+                        margin="normal"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
+                    <TextField
+                        label="Password"
+                        variant="outlined"
                         type="password"
+                        fullWidth
+                        margin="normal"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                </div>
-                <button type="submit">Register</button>
-            </form>
-            {message && <p>{message}</p>}
-        </div>
+                    <Button variant="contained" color="primary" fullWidth type="submit" sx={{ mt: 2 }}>
+                        Register
+                    </Button>
+                </form>
+                {message && (
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                        {message}
+                    </Alert>
+                )}
+            </Box>
+        </Container>
     );
 }
 

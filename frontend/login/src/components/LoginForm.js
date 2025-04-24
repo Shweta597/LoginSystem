@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { TextField, Button, Typography, Container, Box, Alert } from '@mui/material';
 
 function LoginForm() {
     const [email, setEmail] = useState('');
@@ -26,31 +27,43 @@ function LoginForm() {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input
+        <Container maxWidth="sm">
+            <Box sx={{ mt: 5, p: 3, boxShadow: 3, borderRadius: 2, backgroundColor: 'white' }}>
+                <Typography variant="h4" align="center" gutterBottom>
+                    Login
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        label="Email"
+                        variant="outlined"
                         type="email"
+                        fullWidth
+                        margin="normal"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
+                    <TextField
+                        label="Password"
+                        variant="outlined"
                         type="password"
+                        fullWidth
+                        margin="normal"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            {message && <p>{message}</p>}
-        </div>
+                    <Button variant="contained" color="primary" fullWidth type="submit" sx={{ mt: 2 }}>
+                        Login
+                    </Button>
+                </form>
+                {message && (
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                        {message}
+                    </Alert>
+                )}
+            </Box>
+        </Container>
     );
 }
 
