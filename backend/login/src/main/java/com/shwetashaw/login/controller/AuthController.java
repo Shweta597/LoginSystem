@@ -1,20 +1,31 @@
 package com.shwetashaw.login.controller;
 
 import com.shwetashaw.login.model.AppUser;
+import com.shwetashaw.login.service.JwtService;
 import com.shwetashaw.login.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
+import java.util.Collections;
 
 @RestController
 @RequestMapping
-@CrossOrigin(origins="http://localhost:3000/")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AppUser user) {
@@ -28,15 +39,23 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED)
                             .body(result);
     }
-       
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AppUser user) {
-        String result = userService.loginUser(user.getEmail(), user.getPassword());
 
-        if (result.equals("Login successful!")) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
-        }
+    @PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody AppUser user) {
+    try {
+        // Authenticate user based on email and password
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+        );
+    } catch (AuthenticationException e) {
+        e.printStackTrace(); // Log the full stack trace
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
+
+    // Generate token with the email
+    String token = jwtService.generateToken(user.getEmail());
+
+    // Return the token in the response body
+    return ResponseEntity.ok(Collections.singletonMap("token", token));
+}
 }

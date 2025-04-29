@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, Box, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,10 +18,17 @@ function LoginForm() {
                 password
             });
 
-            setMessage(response.data); // shows "Login successful!" if successful
+            if (response.data.token) {
+                // Store the JWT token in localStorage
+                localStorage.setItem('token', response.data.token);
+                setMessage("Login successful!");
+                navigate('/'); // Redirect to the home page after login
+            } else {
+                setMessage("Login failed. Please try again.");
+            }
         } catch (error) {
             if (error.response) {
-                setMessage(error.response.data); // shows error message from backend
+                setMessage(error.response.data.message || "Login failed. Please check your credentials.");
             } else {
                 setMessage("An error occurred. Please try again.");
             }
@@ -58,7 +67,7 @@ function LoginForm() {
                     </Button>
                 </form>
                 {message && (
-                    <Alert severity="info" sx={{ mt: 2 }}>
+                    <Alert severity={message === "Login successful!" ? "success" : "error"} sx={{ mt: 2 }}>
                         {message}
                     </Alert>
                 )}
